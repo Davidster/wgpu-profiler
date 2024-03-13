@@ -9,15 +9,20 @@ use winit::{
 
 fn scopes_to_console_recursive(results: &[GpuTimerQueryResult], indentation: u32) {
     for scope in results {
-        if indentation > 0 {
-            print!("{:<width$}", "|", width = 4);
-        }
+        // if indentation > 0 {
+        //     print!("{:<width$}", "|", width = 4);
+        // }
 
-        println!(
-            "{:.3}μs - {}",
-            (scope.time.end - scope.time.start) * 1000.0 * 1000.0,
-            scope.label
-        );
+        // println!(
+        //     "{:.3}μs - {}",
+        //     (scope.time.end - scope.time.start) * 1000.0 * 1000.0,
+        //     scope.label
+        // );
+
+        let diff = (scope.time.end - scope.time.start) * 1000.0;
+        if diff < 0.0 {
+            println!("Got negative time for scope {}: {:.3}ms", scope.label, diff);
+        }
 
         if !scope.nested_queries.is_empty() {
             scopes_to_console_recursive(&scope.nested_queries, indentation + 1);
@@ -27,15 +32,15 @@ fn scopes_to_console_recursive(results: &[GpuTimerQueryResult], indentation: u32
 
 fn console_output(results: &Option<Vec<GpuTimerQueryResult>>, enabled_features: wgpu::Features) {
     profiling::scope!("console_output");
-    print!("\x1B[2J\x1B[1;1H"); // Clear terminal and put cursor to first row first column
-    println!("Welcome to wgpu_profiler demo!");
-    println!();
-    println!("Enabled device features: {:?}", enabled_features);
-    println!();
-    println!(
-        "Press space to write out a trace file that can be viewed in chrome's chrome://tracing"
-    );
-    println!();
+    // print!("\x1B[2J\x1B[1;1H"); // Clear terminal and put cursor to first row first column
+    // println!("Welcome to wgpu_profiler demo!");
+    // println!();
+    // println!("Enabled device features: {:?}", enabled_features);
+    // println!();
+    // println!(
+    //     "Press space to write out a trace file that can be viewed in chrome's chrome://tracing"
+    // );
+    // println!();
     match results {
         Some(results) => {
             scopes_to_console_recursive(results, 0);
