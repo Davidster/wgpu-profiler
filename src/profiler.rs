@@ -297,7 +297,7 @@ impl GpuProfiler {
 
         #[cfg(feature = "tracy")]
         if let Some(ref mut tracy_scope) = query.tracy_scope {
-            tracy_scope.end_zone();
+            // tracy_scope.end_zone();
         }
 
         if query.has_debug_group {
@@ -669,19 +669,22 @@ impl GpuProfiler {
         };
 
         let _tracy_scope = if self.settings.enable_timer_queries {
-            #[cfg(feature = "tracy")]
-            {
-                let location = std::panic::Location::caller();
-                self.tracy_context.as_ref().and_then(|c| {
-                    c.span_alloc(&label, "", location.file(), location.line())
-                        .ok()
-                })
-            }
-            #[cfg(not(feature = "tracy"))]
-            Option::<()>::None
+            // #[cfg(feature = "tracy")]
+            // {
+            //     let location = std::panic::Location::caller();
+            //     self.tracy_context.as_ref().and_then(|c| {
+            //         c.span_alloc(&label, "", location.file(), location.line())
+            //             .ok()
+            //     })
+            // }
+            // #[cfg(not(feature = "tracy"))]
+            // Option::<()>::None
+            None
         } else {
             None
         };
+
+        // dbg!(_tracy_scope);
 
         let pid = if cfg!(target_arch = "wasm32") {
             0
@@ -743,7 +746,7 @@ impl GpuProfiler {
 
                 #[cfg(feature = "tracy")]
                 if let Some(tracy_scope) = scope.tracy_scope.take() {
-                    tracy_scope.upload_timestamp(start_raw as i64, end_raw as i64);
+                    // tracy_scope.upload_timestamp(start_raw as i64, end_raw as i64);
                 }
 
                 let nested_queries = Self::process_timings_recursive(
